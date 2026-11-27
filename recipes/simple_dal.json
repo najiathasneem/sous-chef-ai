@@ -1,0 +1,27 @@
+{
+  "name": "Simple Dal (tadka first)",
+  "servings": 4,
+  "slots": {
+    "1": {"name": "oil + cumin seeds"},
+    "2": {"name": "chopped onion"},
+    "3": {"name": "ginger-garlic + tomato + spices"},
+    "4": {"name": "soaked toor dal"},
+    "5": {"name": "water + salt", "liquid": true}
+  },
+  "steps": [
+    {"action": "heat", "target_c": 170},
+    {"action": "add", "slot": 1, "grams": 25},
+    {"action": "hold", "target_c": 170, "seconds": 30, "stir_rpm": 20},
+    {"action": "add", "slot": 2, "grams": 150},
+    {"action": "hold", "target_c": 160, "seconds": 420, "stir_rpm": 25},
+    {"action": "add", "slot": 3, "grams": 180},
+    {"action": "hold", "target_c": 150, "seconds": 300, "stir_rpm": 30},
+    {"action": "add", "slot": 4, "grams": 250},
+    {"action": "add", "slot": 5, "grams": 800},
+    {"action": "heat", "target_c": 98},
+    {"action": "hold", "target_c": 100, "seconds": 1800, "stir_rpm": 10},
+    {"action": "stir", "rpm": 40, "seconds": 20},
+    {"action": "wait", "seconds": 120},
+    {"action": "done"}
+  ]
+}
