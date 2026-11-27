@@ -25,8 +25,16 @@ class SimPot:
         self.open_slots: set[int] = set()
         self.slots = slots            # {slot: {"name":..., "liquid": bool}}
         self.sensor_broken = False
+        self.time_s = 0.0
+        # (time_s, temp_c, power 0-1, rpm, food_g), sampled for graphs
+        self.history: list[tuple[float, float, float, int, float]] = []
+        self._next_sample = 0.0
 
     def step(self, dt: float) -> None:
+        self.time_s += dt
+        if self.time_s >= self._next_sample:
+            self.history.append((self.time_s, self.temp_c, self.power, self.rpm, self.food_g))
+            self._next_sample += 2.0
         # pour from open hoppers (cold ingredients cool the pot)
         for slot in self.open_slots:
             grams = DISPENSE_G_PER_S * dt

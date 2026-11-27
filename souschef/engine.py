@@ -18,13 +18,16 @@ class CookingEngine:
         self.m = machine
         self.pid = PID()
         self.log = log
+        self.step_marks: list[tuple[float, str]] = []   # (time_s, description) for graphs
 
     # ---------- public ----------
     def run(self, recipe: dict) -> None:
         self.log(f"Cooking: {recipe['name']}")
         try:
             for i, step in enumerate(recipe["steps"], 1):
-                self.log(f"[{self._clock()}] step {i}: {self._describe(step, recipe)}")
+                desc = self._describe(step, recipe)
+                self.step_marks.append((self.m.clock.now(), desc))
+                self.log(f"[{self._clock()}] step {i}: {desc}")
                 getattr(self, f"_do_{step['action']}")(step)
             self.log(f"[{self._clock()}] Done! Food is ready.")
         except SafetyAbort as e:

@@ -6,6 +6,7 @@ Phase 1 runs entirely on your PC with a **simulated machine**, so there's no har
 ## Quick start
 ```bash
 python main.py run recipes/simple_dal.json   # cook dal on the simulator (~1 sec)
+python main.py run recipes/simple_dal.json --plot cook.png   # + temperature graph (pip install matplotlib)
 python -m unittest -v                        # run the tests
 ```
 
@@ -25,6 +26,7 @@ souschef/
   pid.py        PID controller for holding temperatures
   recipe.py     JSON recipe format + validation (temp/rpm limits, slots, steps)
   ai.py         Claude turns a plain request into a validated recipe
+  plot.py       graph of temperature, heater power and stirring over time
 recipes/        example recipes
 tests/          unit tests
 ```

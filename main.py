@@ -12,13 +12,22 @@ from souschef.engine import CookingEngine, SafetyAbort
 from souschef.simulator import build_sim_machine
 
 
-def cmd_run(args):
-    r = recipe_mod.load(args.recipe)
-    machine, _ = build_sim_machine(r["slots"])
+def cook(r, plot_path=None):
+    machine, pot = build_sim_machine(r["slots"])
+    engine = CookingEngine(machine)
     try:
-        CookingEngine(machine).run(r)
+        engine.run(r)
     except SafetyAbort:
         sys.exit(1)
+    finally:
+        if plot_path:
+            from souschef.plot import plot_cook
+            plot_cook(pot, engine.step_marks, r["name"], plot_path)
+            print(f"Graph saved to {plot_path}")
+
+
+def cmd_run(args):
+    cook(recipe_mod.load(args.recipe), args.plot)
 
 
 def cmd_ai(args):
@@ -32,8 +41,7 @@ def cmd_ai(args):
     else:
         print(text)
     if args.cook:
-        machine, _ = build_sim_machine(r["slots"])
-        CookingEngine(machine).run(r)
+        cook(r, args.plot)
 
 
 def main():
@@ -42,12 +50,14 @@ def main():
 
     run = sub.add_parser("run", help="cook a recipe JSON on the simulator")
     run.add_argument("recipe")
+    run.add_argument("--plot", metavar="PNG", help="save a temperature graph, e.g. cook.png")
     run.set_defaults(func=cmd_run)
 
     ai = sub.add_parser("ai", help="ask Claude to write a recipe")
     ai.add_argument("request")
     ai.add_argument("--save")
     ai.add_argument("--cook", action="store_true", help="also cook it on the simulator")
+    ai.add_argument("--plot", metavar="PNG", help="with --cook: save a temperature graph")
     ai.set_defaults(func=cmd_ai)
 
     args = p.parse_args()
